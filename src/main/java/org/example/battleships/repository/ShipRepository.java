@@ -4,6 +4,7 @@ import jakarta.validation.constraints.Size;
 import org.example.battleships.model.entity.ShipEntity;
 import org.example.battleships.model.entity.UserEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -16,4 +17,7 @@ public interface ShipRepository extends JpaRepository<ShipEntity, Long> {
     List<ShipEntity> findAllByUser(UserEntity user);
 
     List<ShipEntity> findAllByUserNot(UserEntity user);
+
+    @Query("select s from ShipEntity s order by s.name,s.health,s.power")
+    List<ShipEntity> findAllOrderedByNameHealthAndPower();
 }

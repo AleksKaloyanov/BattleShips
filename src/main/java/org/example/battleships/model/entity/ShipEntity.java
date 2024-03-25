@@ -1,9 +1,6 @@
 package org.example.battleships.model.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.OneToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
@@ -25,9 +22,9 @@ public class ShipEntity extends BaseEntity {
     @PastOrPresent
     @NotNull
     private LocalDate created;
-    @OneToOne
+    @ManyToOne
     private CategoryEntity category;
-    @OneToOne
+    @ManyToOne
     private UserEntity user;
 
     public ShipEntity() {

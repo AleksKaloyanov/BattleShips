@@ -1,5 +1,6 @@
 package org.example.battleships.service;
 
+import org.example.battleships.model.dto.ShipDTO;
 import org.example.battleships.model.service.ShipServiceModel;
 
 import java.util.List;
@@ -9,7 +10,11 @@ public interface ShipService {
 
     void add(ShipServiceModel shipServiceModel);
 
-    List<ShipServiceModel> findCurrentUsersShips();
+    List<ShipDTO> getShipsOwnedBy(Long id);
 
-    List<ShipServiceModel> findOtherUsersShips();
+    List<ShipDTO> getShipsNotOwnedBy(Long id);
+
+    List<ShipDTO> getAllShipsOrderedByNameHealthAndPower();
+
+    void battle(Long attackerId, Long defenderId);
 }

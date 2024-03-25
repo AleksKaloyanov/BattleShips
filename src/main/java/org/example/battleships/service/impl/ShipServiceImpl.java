@@ -1,5 +1,6 @@
 package org.example.battleships.service.impl;
 
+import org.example.battleships.model.dto.ShipDTO;
 import org.example.battleships.model.entity.ShipEntity;
 import org.example.battleships.model.service.ShipServiceModel;
 import org.example.battleships.repository.ShipRepository;
@@ -52,20 +53,47 @@ public class ShipServiceImpl implements ShipService {
     }
 
     @Override
-    public List<ShipServiceModel> findCurrentUsersShips() {
+    public List<ShipDTO> getShipsOwnedBy(Long id) {
         return shipRepository
-                .findAllByUser(userService.findById(currentUser.getId()))
+                .findAllByUser(userService.findById(id))
                 .stream()
-                .map(shipEntity -> modelMapper.map(shipEntity, ShipServiceModel.class))
+                .map(shipEntity -> modelMapper.map(shipEntity, ShipDTO.class))
                 .collect(Collectors.toList());
     }
 
     @Override
-    public List<ShipServiceModel> findOtherUsersShips() {
+    public List<ShipDTO> getShipsNotOwnedBy(Long id) {
         return shipRepository
-                .findAllByUserNot(userService.findById(currentUser.getId()))
+                .findAllByUserNot(userService.findById(id))
                 .stream()
-                .map(shipEntity -> modelMapper.map(shipEntity, ShipServiceModel.class))
+                .map(shipEntity -> modelMapper.map(shipEntity, ShipDTO.class))
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<ShipDTO> getAllShipsOrderedByNameHealthAndPower() {
+        return shipRepository.findAllOrderedByNameHealthAndPower()
+                .stream()
+                .map(shipEntity -> modelMapper.map(shipEntity, ShipDTO.class))
+                .collect(Collectors.toList());
+    }
+
+    public ShipEntity findById(Long id) {
+        return shipRepository.findById(id)
+                .orElse(null);
+    }
+
+    @Override
+    public void battle(Long attackerId, Long defenderId) {
+        ShipEntity attacker = findById(attackerId);
+        ShipEntity defender = findById(defenderId);
+
+        defender.setHealth(defender.getHealth() - attacker.getPower());
+
+        if (defender.getHealth() <= 0) {
+            shipRepository.deleteById(defenderId);
+        } else {
+            shipRepository.save(defender);
+        }
     }
 }
